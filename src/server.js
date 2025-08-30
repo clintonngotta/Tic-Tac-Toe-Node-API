@@ -4,6 +4,7 @@ import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
 
+import authRoutes from "./auth/routes.js";
 dotenv.config();
 
 const app = express();
@@ -15,6 +16,8 @@ app.use(cors());
 app.get("/", (req, res) => {
 	res.send("root route");
 });
+
+app.use("/auth", authRoutes);
 
 const port = process.env.SERVER_PORT || 3000;
 
