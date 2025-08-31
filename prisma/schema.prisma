@@ -24,5 +24,24 @@ model User {
   password  String  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  stats GameStats[]
 }
+
+
+
+
+model GameStats {
+  id        String   @id @default(uuid())
+  wins      Int
+  losses    Int  
+  draws     Int  
+  userId    String  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
 

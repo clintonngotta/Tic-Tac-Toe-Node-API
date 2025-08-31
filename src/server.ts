@@ -9,6 +9,8 @@ import dotenv from "dotenv";
 import authRoutes from "./auth/routes";
 import playRoutes from "./game/routes";
 
+import { validateToken } from "./middlewares/verify_token";
+
 dotenv.config();
 
 const app = express();
@@ -27,7 +29,10 @@ app.get("/health", (req: Request, res: Response) => {
 });
 
 app.use("/auth", authRoutes);
-app.use("/play", playRoutes);
+// protected routes
+app.use(validateToken);
+app.use("/game", playRoutes);
+
 const port = process.env.SERVER_PORT || 3000;
 
 app.listen(port, () => {

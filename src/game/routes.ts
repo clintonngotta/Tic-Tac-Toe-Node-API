@@ -5,11 +5,12 @@ import {
 	MakeMoveRequestSchema,
 } from "../schemas/game";
 import { validateBody } from "../middlewares/validation";
-import { play, game_status } from "./controller";
+import { play, game_status, game_stats } from "./controller";
 
 const router = express.Router();
 
-router.post("/", validateBody(MakeMoveRequestSchema), play);
-router.post("/game_status", validateBody(GameStatusRequestSchema), game_status);
+router.post("/play", validateBody(MakeMoveRequestSchema), play);
+router.post("/status", validateBody(GameStatusRequestSchema), game_status);
+router.get("/stats", game_stats);
 
 export default router;
