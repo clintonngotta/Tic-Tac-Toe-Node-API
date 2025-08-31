@@ -7,6 +7,7 @@ import type { Request, Response } from "express";
 import dotenv from "dotenv";
 
 import authRoutes from "./auth/routes";
+import playRoutes from "./game/routes";
 
 dotenv.config();
 
@@ -26,7 +27,7 @@ app.get("/health", (req: Request, res: Response) => {
 });
 
 app.use("/auth", authRoutes);
-
+app.use("/play", playRoutes);
 const port = process.env.SERVER_PORT || 3000;
 
 app.listen(port, () => {
