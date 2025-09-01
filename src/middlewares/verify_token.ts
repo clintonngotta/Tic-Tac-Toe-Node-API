@@ -19,11 +19,25 @@ export interface RequestWithToken extends Request {
 	};
 }
 
-export const validateToken = (
-	req: RequestWithToken,
-	res: Response,
-	next: NextFunction
-) => {
+
+declare global {
+	namespace Express {
+		interface Request {
+			user?: {
+				userId: string;
+				email: string;
+				name: string;
+				iat: number;
+				exp: number;
+			};
+		}
+	}
+}
+
+
+
+
+export const validateToken = (req: Request, res: Response, next: NextFunction) => {
 	const bearerHeader = req.headers.authorization;
 	if (!bearerHeader || !bearerHeader.startsWith("Bearer ")) {
 		return res.status(401).json({ message: "Unauthorized" });

@@ -6,7 +6,7 @@ import { DecodedToken, RequestWithToken } from "../middlewares/verify_token";
 const GAME_BASE_URL = process.env.GAME_URL || "http://localhost:8000";
 const prisma = new PrismaClient();
 
-export const play = async (req: RequestWithToken, res: Response) => {
+export const play = async (req: Request | RequestWithToken, res: Response) => {
 	try {
 		const game_req = await fetch(`${GAME_BASE_URL}/play`, {
 			method: "POST",
@@ -23,7 +23,9 @@ export const play = async (req: RequestWithToken, res: Response) => {
 		}
 
 		const data = await game_req.json();
-		await record_user_stats(data, req.user);
+		if ("user" in req && req.user) {
+			await record_user_stats(data, req.user);
+		}
 		res.status(200).json(data);
 	} catch (error) {
 		res.status(500).json({
@@ -121,18 +123,25 @@ export const game_status = async (req: Request, res: Response) => {
 	}
 };
 
-export const game_stats = async (req: RequestWithToken, res: Response) => {
+export const game_stats = async (
+	req: Request | RequestWithToken,
+	res: Response
+) => {
 	try {
-		const { userId } = req.user;
-		const stats = await prisma.gameStats.findMany({
-			where: {
-				userId,
-			},
-		});
-		res.status(200).json({
-			message: "user stats fetched successully",
-			data: stats,
-		});
+		if ("user" in req && req.user) {
+			const { userId } = req.user;
+			const stats = await prisma.gameStats.findMany({
+				where: {
+					userId,
+				},
+			});
+			res.status(200).json({
+				message: "user stats fetched successully",
+				data: stats,
+			});
+		} else {
+			res.status(500).json({ message: "Provide Authenication token" });
+		}
 	} catch (error) {
 		res
 			.status(500)
